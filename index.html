@@ -12,28 +12,26 @@
       background: #222;
       color: #fff;
       font-family: sans-serif;
-      overflow: hidden; /* ✅ スクロール禁止 */
-    }
-
-    body {
+      overflow: hidden; /* ✅ スクロールなし */
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
     }
 
-    /* 上部：Unityゲームエリア（全体の70%高さ） */
+    /* ゲーム部分 */
     #unity-container {
+      position: relative;
       width: 100%;
       max-width: 960px;
-      height: 70vh; /* ✅ 画面の7割をUnity用に確保 */
+      flex-shrink: 0;
+      aspect-ratio: 16 / 10; /* ✅ 960x600の比率を維持 */
       background: #111;
       display: flex;
       justify-content: center;
       align-items: center;
+      margin-top: 10px;
       border-radius: 8px;
       overflow: hidden;
-      margin-top: 10px;
     }
 
     canvas {
@@ -42,18 +40,19 @@
       display: block;
     }
 
-    /* 下部：リーダーボード（全体の30%高さ） */
+    /* リーダーボード部分 */
     #leaderboard-area {
       width: 100%;
       max-width: 960px;
-      height: 28vh; /* ✅ 画面の3割弱に固定 */
+      flex-grow: 1; /* 残りの高さを自動で使用 */
       background: #333;
       border-radius: 10px;
-      margin-top: 10px;
+      margin-top: 8px;
       padding: 10px;
       box-shadow: 0 0 10px rgba(0,0,0,0.3);
       display: flex;
       flex-direction: column;
+      justify-content: flex-start;
     }
 
     #leaderboard-area h2 {
@@ -67,6 +66,7 @@
       border-collapse: collapse;
       margin-top: 8px;
       flex-grow: 1;
+      overflow-y: auto;
     }
 
     #score-table th, #score-table td {
@@ -126,8 +126,6 @@
       }).then((unityInstance) => {
         console.log("✅ Unity Game Loaded!");
         window.unityGameInstance = unityInstance;
-
-        // 起動時にランキング表示
         fetchLeaderboard();
       }).catch((message) => {
         alert("❌ Unity 読み込みエラー: " + message);
