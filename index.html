@@ -2,59 +2,19 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8">
-  <title>My Unity Game with Leaderboard</title>
+  <title>My Unity Game</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body {
-      margin: 0;
-      background: #222;
-      color: #fff;
-      font-family: sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      gap: 20px;
-      padding: 20px;
-    }
-    #unity-container { flex: 1; max-width: 960px; }
-    canvas { width: 100%; height: 600px; background: #111; border-radius: 8px; }
-    #leaderboard-area {
-      width: 300px;
-      background: #333;
-      border-radius: 10px;
-      padding: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
-    }
-    #leaderboard-area h2 { margin-top: 0; text-align: center; }
-    #score-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    #score-table th, #score-table td {
-      border: 1px solid #555;
-      padding: 6px;
-      text-align: center;
-    }
+    body { margin: 0; background: #222; display: flex; justify-content: center; align-items: center; height: 100vh; }
+    #unity-container { width: 100%; height: 100%; }
+    canvas { width: 100%; height: 100%; background: #222; }
   </style>
 </head>
 <body>
-  <!-- Unityゲーム部分 -->
   <div id="unity-container">
     <canvas id="unity-canvas"></canvas>
   </div>
-
-  <!-- リーダーボード部分 -->
-  <div id="leaderboard-area">
-    <h2>🏆 リーダーボード</h2>
-    <table id="score-table">
-      <thead>
-        <tr><th>Rank</th><th>Name</th><th>Score</th></tr>
-      </thead>
-      <tbody id="leaderboard-body">
-        <tr><td>-</td><td>Loading...</td><td>-</td></tr>
-      </tbody>
-    </table>
-  </div>
-
   <script>
-    // --- Unityの設定 ---
     const buildUrl = "Build";
     const loaderUrl = buildUrl + "/Build.loader.js";
     const config = {
@@ -70,50 +30,19 @@
 
     const canvas = document.querySelector("#unity-canvas");
 
-    // Unityのロード処理
+    // UnityLoader を動的読み込み
     const script = document.createElement("script");
     script.src = loaderUrl;
     script.onload = () => {
       createUnityInstance(canvas, config, (progress) => {
         console.log("Loading: " + (progress * 100).toFixed(1) + "%");
       }).then((unityInstance) => {
-        console.log("✅ Unity Game Loaded!");
-        window.unityGameInstance = unityInstance;
-
-        // 起動時にランキング表示
-        fetchLeaderboard();
+        console.log(":white_check_mark: Unity Game Loaded!");
       }).catch((message) => {
-        alert("❌ Unity 読み込みエラー: " + message);
+        alert(":x: Unity 読み込みエラー: " + message);
       });
     };
     document.body.appendChild(script);
-
-    // --- リーダーボード処理 ---
-    function fetchLeaderboard() {
-      // ★実際はサーバーAPIから取得する部分（今はダミーデータ）
-      const scores = [
-        { rank: 1, name: "Alice", score: 12500 },
-        { rank: 2, name: "Bob", score: 9800 },
-        { rank: 3, name: "Char", score: 7500 }
-      ];
-
-      const tbody = document.getElementById('leaderboard-body');
-      tbody.innerHTML = '';
-      scores.forEach(s => {
-        const row = tbody.insertRow();
-        row.insertCell().textContent = s.rank;
-        row.insertCell().textContent = s.name;
-        row.insertCell().textContent = s.score.toLocaleString();
-      });
-    }
-
-    // --- Unity側から呼び出される関数（C#と連携）---
-    // 例: [DllImport("__Internal")] public static extern void SubmitScore(string name, int score);
-    window.SubmitScoreToWeb = function(name, score) {
-      console.log("Score received from Unity:", name, score);
-      // ★ここでスコアをサーバーに送信できる（今はデモ）
-      fetchLeaderboard(); // 更新再表示
-    }
   </script>
 </body>
 </html>
