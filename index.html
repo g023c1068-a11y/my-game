@@ -11,64 +11,30 @@
       color: #fff;
       font-family: sans-serif;
       display: flex;
-      flex-direction: column; /* 上にゲーム、下にリーダーボード */
-      align-items: center;
-      justify-content: flex-start;
-      min-height: 100vh;
-      overflow-y: auto; /* ← スクロール有効化 */
-    }
-
-    #unity-container {
-      display: flex;
       justify-content: center;
-      align-items: center;
-      width: 100%;
-      background: #111;
-      padding: 10px 0;
+      align-items: flex-start;
+      gap: 20px;
+      padding: 20px;
     }
-
-    /* ゲーム画面が切れないようにアスペクト比固定 */
-    #unity-canvas {
-      width: 90%;
-      max-width: 960px;
-      aspect-ratio: 16 / 9;
-      background: #111;
-      border-radius: 8px;
-      object-fit: contain;
-    }
-
+    #unity-container { flex: 1; max-width: 960px; }
+    canvas { width: 100%; height: 600px; background: #111; border-radius: 8px; }
     #leaderboard-area {
-      width: 90%;
-      max-width: 600px;
+      width: 300px;
       background: #333;
       border-radius: 10px;
       padding: 10px;
       box-shadow: 0 0 10px rgba(0,0,0,0.3);
-      text-align: center;
-      margin: 20px 0 40px;
     }
-
-    #leaderboard-area h2 {
-      margin: 0;
-      font-size: 1.2rem;
-    }
-
-    #score-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 8px;
-    }
-
+    #leaderboard-area h2 { margin-top: 0; text-align: center; }
+    #score-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
     #score-table th, #score-table td {
       border: 1px solid #555;
       padding: 6px;
       text-align: center;
     }
-
   </style>
 </head>
 <body>
-
   <!-- Unityゲーム部分 -->
   <div id="unity-container">
     <canvas id="unity-canvas"></canvas>
@@ -113,6 +79,8 @@
       }).then((unityInstance) => {
         console.log("✅ Unity Game Loaded!");
         window.unityGameInstance = unityInstance;
+
+        // 起動時にランキング表示
         fetchLeaderboard();
       }).catch((message) => {
         alert("❌ Unity 読み込みエラー: " + message);
@@ -122,6 +90,7 @@
 
     // --- リーダーボード処理 ---
     function fetchLeaderboard() {
+      // ★実際はサーバーAPIから取得する部分（今はダミーデータ）
       const scores = [
         { rank: 1, name: "Alice", score: 12500 },
         { rank: 2, name: "Bob", score: 9800 },
@@ -138,9 +107,12 @@
       });
     }
 
+    // --- Unity側から呼び出される関数（C#と連携）---
+    // 例: [DllImport("__Internal")] public static extern void SubmitScore(string name, int score);
     window.SubmitScoreToWeb = function(name, score) {
       console.log("Score received from Unity:", name, score);
-      fetchLeaderboard();
+      // ★ここでスコアをサーバーに送信できる（今はデモ）
+      fetchLeaderboard(); // 更新再表示
     }
   </script>
 </body>
