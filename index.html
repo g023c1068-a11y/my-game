@@ -14,22 +14,22 @@
       flex-direction: column; /* 上にゲーム、下にリーダーボード */
       align-items: center;
       justify-content: flex-start;
-      height: 100vh;
-      overflow: hidden; /* スクロールなし */
+      min-height: 100vh;
+      overflow-y: auto; /* ← スクロール有効化 */
     }
 
     #unity-container {
-      flex: 1;
       display: flex;
       justify-content: center;
       align-items: center;
       width: 100%;
-      max-height: 70vh; /* 上部7割をゲームエリアに */
+      background: #111;
+      padding: 10px 0;
     }
 
-    /* アスペクト比を固定して見切れ防止 */
+    /* ゲーム画面が切れないようにアスペクト比固定 */
     #unity-canvas {
-      width: 100%;
+      width: 90%;
       max-width: 960px;
       aspect-ratio: 16 / 9;
       background: #111;
@@ -38,14 +38,14 @@
     }
 
     #leaderboard-area {
-      width: 100%;
+      width: 90%;
       max-width: 600px;
       background: #333;
       border-radius: 10px;
       padding: 10px;
       box-shadow: 0 0 10px rgba(0,0,0,0.3);
       text-align: center;
-      margin-bottom: 10px;
+      margin: 20px 0 40px;
     }
 
     #leaderboard-area h2 {
@@ -113,8 +113,6 @@
       }).then((unityInstance) => {
         console.log("✅ Unity Game Loaded!");
         window.unityGameInstance = unityInstance;
-
-        // 起動時にランキング表示
         fetchLeaderboard();
       }).catch((message) => {
         alert("❌ Unity 読み込みエラー: " + message);
@@ -124,7 +122,6 @@
 
     // --- リーダーボード処理 ---
     function fetchLeaderboard() {
-      // ★ 実際はサーバーAPIから取得する部分（今はダミーデータ）
       const scores = [
         { rank: 1, name: "Alice", score: 12500 },
         { rank: 2, name: "Bob", score: 9800 },
@@ -141,12 +138,9 @@
       });
     }
 
-    // --- Unity側から呼び出される関数（C#と連携）---
-    // 例: [DllImport("__Internal")] public static extern void SubmitScore(string name, int score);
     window.SubmitScoreToWeb = function(name, score) {
       console.log("Score received from Unity:", name, score);
-      // ★ここでスコアをサーバーに送信できる（今はデモ）
-      fetchLeaderboard(); // 更新再表示
+      fetchLeaderboard();
     }
   </script>
 </body>
