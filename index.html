@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="utf-8">
-    <title>My Unity Game with Leaderboard</title>
+    <title>My Unity Game with Leaderboard (16:9 Aspect Ratio)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
@@ -17,25 +17,30 @@
             padding: 20px;
             min-height: 100vh;
         }
-        /* Unityコンテナ: アスペクト比 16:9 を維持 */
+        
+        /* 🎮 Unityコンテナ: アスペクト比 16:9 を維持 */
         #unity-container { 
             width: 65%;
             max-width: 960px;
-            height: 0; /* 0にしてpaddingで高さを設定 */
-            padding-bottom: 56.25%; /* 9/16 = 56.25% (16:9) */
-            position: relative; /* canvas絶対配置の基準 */
+            height: 0; 
+            /* 9/16 = 56.25%。この値で幅に対する高さを設定し、16:9を維持 */
+            padding-bottom: 56.25%; 
+            position: relative; 
+            border-radius: 8px; /* コンテナにも角丸を適用 */
+            overflow: hidden; /* コンテナ外の要素を見せないように */
         }
-        /* Canvas: コンテナの全体を使う（絶対配置で親の確保した領域に合わせる） */
+        
+        /* Canvas: コンテナの全体を使う（絶対配置） */
         canvas { 
             width: 100%; 
             height: 100%; 
             background: #111; 
-            border-radius: 8px;
             position: absolute;
             top: 0;
             left: 0;
         }
-        /* リーダーボード: 幅を固定 */
+        
+        /* 🏆 リーダーボード: 幅を固定 */
         #leaderboard-area {
             width: 300px;
             background: #333;
@@ -104,9 +109,8 @@
         };
         document.body.appendChild(script);
 
-        // --- リーダーボード処理 ---
+        // --- リーダーボード処理（前回の実装を維持）---
         function fetchLeaderboard() {
-            // ★実際はサーバーAPIから取得する部分（今はダミーデータ）
             const scores = [
                 { rank: 1, name: "Alice", score: 12500 },
                 { rank: 2, name: "Bob", score: 9800 },
