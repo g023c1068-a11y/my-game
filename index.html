@@ -5,83 +5,70 @@
   <title>My Unity Game with Leaderboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    html, body {
+    body {
       margin: 0;
-      padding: 0;
-      height: 100%;
       background: #222;
       color: #fff;
       font-family: sans-serif;
-      overflow: hidden; /* ✅ スクロールなし */
       display: flex;
-      flex-direction: column;
+      flex-direction: column; /* 上にゲーム、下にリーダーボード */
       align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
+      overflow: hidden; /* スクロールなし */
     }
 
-    /* ゲーム部分 */
     #unity-container {
-      position: relative;
-      width: 100%;
-      max-width: 960px;
-      flex-shrink: 0;
-      aspect-ratio: 16 / 10; /* ✅ 960x600の比率を維持 */
-      background: #111;
+      flex: 1;
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-top: 10px;
-      border-radius: 8px;
-      overflow: hidden;
-    }
-
-    canvas {
       width: 100%;
-      height: 100%;
-      display: block;
+      max-height: 70vh; /* 上部7割をゲームエリアに */
     }
 
-    /* リーダーボード部分 */
-    #leaderboard-area {
+    /* アスペクト比を固定して見切れ防止 */
+    #unity-canvas {
       width: 100%;
       max-width: 960px;
-      flex-grow: 1; /* 残りの高さを自動で使用 */
+      aspect-ratio: 16 / 9;
+      background: #111;
+      border-radius: 8px;
+      object-fit: contain;
+    }
+
+    #leaderboard-area {
+      width: 100%;
+      max-width: 600px;
       background: #333;
       border-radius: 10px;
-      margin-top: 8px;
       padding: 10px;
       box-shadow: 0 0 10px rgba(0,0,0,0.3);
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
+      text-align: center;
+      margin-bottom: 10px;
     }
 
     #leaderboard-area h2 {
       margin: 0;
-      text-align: center;
-      font-size: 1.2em;
+      font-size: 1.2rem;
     }
 
     #score-table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 8px;
-      flex-grow: 1;
-      overflow-y: auto;
     }
 
     #score-table th, #score-table td {
       border: 1px solid #555;
-      padding: 5px;
+      padding: 6px;
       text-align: center;
-      font-size: 0.9em;
     }
 
-    #score-table th {
-      background: #444;
-    }
   </style>
 </head>
 <body>
+
   <!-- Unityゲーム部分 -->
   <div id="unity-container">
     <canvas id="unity-canvas"></canvas>
@@ -126,6 +113,8 @@
       }).then((unityInstance) => {
         console.log("✅ Unity Game Loaded!");
         window.unityGameInstance = unityInstance;
+
+        // 起動時にランキング表示
         fetchLeaderboard();
       }).catch((message) => {
         alert("❌ Unity 読み込みエラー: " + message);
@@ -135,6 +124,7 @@
 
     // --- リーダーボード処理 ---
     function fetchLeaderboard() {
+      // ★ 実際はサーバーAPIから取得する部分（今はダミーデータ）
       const scores = [
         { rank: 1, name: "Alice", score: 12500 },
         { rank: 2, name: "Bob", score: 9800 },
@@ -151,9 +141,12 @@
       });
     }
 
+    // --- Unity側から呼び出される関数（C#と連携）---
+    // 例: [DllImport("__Internal")] public static extern void SubmitScore(string name, int score);
     window.SubmitScoreToWeb = function(name, score) {
       console.log("Score received from Unity:", name, score);
-      fetchLeaderboard();
+      // ★ここでスコアをサーバーに送信できる（今はデモ）
+      fetchLeaderboard(); // 更新再表示
     }
   </script>
 </body>
