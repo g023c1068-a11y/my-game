@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8">
-  <title>My Unity Game (9:16) with Leaderboard</title>
+  <title>My Unity Game (16:10) with Leaderboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
@@ -15,7 +15,7 @@
       align-items: center;
       justify-content: flex-start;
       min-height: 100vh;
-      overflow-y: auto; /* 縦スクロール可能 */
+      overflow-y: auto; /* スクロール有効 */
     }
 
     /* --- ゲームコンテナ --- */
@@ -28,20 +28,20 @@
       padding: 10px 0;
     }
 
-    /* --- ゲーム画面: 9:16 の縦長比率を維持 --- */
+    /* --- ゲーム画面: 16:10 比率 --- */
     #unity-canvas {
       width: 90%;
-      max-width: 540px;  /* スマホの幅に合わせた上限 */
-      aspect-ratio: 9 / 16;
+      max-width: 960px;
+      aspect-ratio: 16 / 10; /* ★ここで比率指定 */
       background: #111;
       border-radius: 8px;
       object-fit: contain;
     }
 
-    /* --- リーダーボード部分 --- */
+    /* --- リーダーボード --- */
     #leaderboard-area {
       width: 90%;
-      max-width: 400px;
+      max-width: 600px;
       background: #333;
       border-radius: 10px;
       padding: 10px;
